@@ -1,5 +1,5 @@
 ---
-name: chatwoot
+name: chatwoot-api
 description: Implement Chatwoot API integrations for customer service systems. Use this skill when working with Chatwoot webhooks, contacts, conversations, agents, messages, labels, teams, or any Chatwoot API endpoint. Also use when implementing user/agent sync between an application and Chatwoot, managing Chatwoot platform users, or building admin panels that manage Chatwoot agents. Covers both Application API and Platform API with self-hosted gotchas.
 ---
 
