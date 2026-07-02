@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<ruleset name="Custom Theme WPCS">
+	<description>WordPress Coding Standards ruleset for a custom theme. Copy to the theme root as phpcs.xml and adjust text_domain, prefixes, and testVersion.</description>
+
+	<!-- Scan the theme dir; run: phpcs (uses this file automatically at the root). -->
+	<file>.</file>
+	<arg name="extensions" value="php"/>
+	<arg name="colors"/>
+	<arg value="sp"/><!-- show sniff codes + progress -->
+
+	<!-- Do not scan build/vendor/dead-config dirs. -->
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/acf-json/*</exclude-pattern>
+
+	<rule ref="WordPress">
+		<!--
+			LOAD-BEARING: Generic.PHP.Syntax crashes on PHP 8.2+ (trim(null)) and
+			silently aborts whole-file scanning, hiding security findings and
+			producing a false "clean". php -l covers parse checking instead.
+			Never remove this exclusion.
+		-->
+		<exclude name="Generic.PHP.Syntax"/>
+	</rule>
+
+	<!-- I18n: list EVERY text domain the theme actually uses (audit with:
+	     rg "'yourprefix[^']*'" --type php ). A single wrong domain fails all
+	     the other domain's __() calls. -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="your-theme"/>
+				<!-- <element value="your-theme-child"/> -->
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Global prefixes for functions/hooks/globals. -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="yourprefix"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Target the PHP range the site may run on (upgrade-safety). -->
+	<config name="testVersion" value="7.4-"/>
+	<config name="minimum_wp_version" value="6.0"/>
+
+	<!-- Relax docblock/formatting noise on one-off CLI migration scripts only. -->
+	<rule ref="Squiz.Commenting">
+		<exclude-pattern>*/tools/*</exclude-pattern>
+	</rule>
+</ruleset>
